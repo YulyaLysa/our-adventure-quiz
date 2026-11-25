@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест для найкращого чоловіка</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f7f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            background-color: #e0e0e0;
+            border-radius: 6px;
+            height: 12px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background-color: #e74c3c;
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .question-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .question-number {
+            color: #e74c3c;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .question-image {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .options-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .option-button {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #fff;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            font-size: 1.05em;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .option-button:hover {
+            border-color: #e74c3c;
+            background-color: #fff8f8;
+        }
+
+        .option-button:active {
+            transform: translateY(1px);
+        }
+
+        .result-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 40px 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            display: none;
+        }
+
+        .result-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .result-score {
+            font-size: 3em;
+            font-weight: 800;
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+
+        .result-description {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .action-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 15px 32px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: 600;
+        }
+
+        .action-button:hover {
+            background-color: #c0392b;
+        }
+
+        @media (min-width: 600px) {
+            .options-list {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Гра-тест: Як добре ти пам'ятаєш наші пригоди? ❤️</h1>
+        <p class="subtitle">Перевіримо твою пам'ять на найважливіші та найкумедніші моменти!</p>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </header>
+
+    <div class="quiz-area" id="quizArea">
+        <!-- Запитання завантажуються динамічно -->
+    </div>
+
+    <div class="result-card" id="resultArea">
+        <div class="result-title" id="resultTitle">Твій результат:</div>
+        <div class="result-score" id="resultScore">0 / 20</div>
+        <p class="result-description" id="resultDescription"></p>
+        <button class="action-button" onclick="location.reload();">Пройти ще раз 🔄</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            question: "Коли ми офіційно стали чоловіком та дружиною?",
+            options: [
+                { text: "6 серпня 2010 року", correct: true },
+                { text: "12 серпня 2010 року", correct: false },
+                { text: "6 вересня 2011 року", correct: false },
+                { text: "15 липня 2009 року", correct: false }
+            ]
+        },
+        {
+            question: "Яка страва свого часу епічно та незабутньо згоріла у нас на кухні?",
+            options: [
+                { text: "Шашлик", correct: false },
+                { text: "Підчеревина", correct: true },
+                { text: "Курячі крильця", correct: false },
+                { text: "Піца", correct: false }
+            ]
+        },
+        {
+            question: "У якому місті ми грали в дитячу та веселу гру «пол це лава»?",
+            options: [
+                { text: "Львів", correct: false },
+                { text: "Чернівці", correct: true },
+                { text: "Івано-Франківськ", correct: false },
+                { text: "Полтава", correct: false }
+            ]
+        },
+        {
+            question: "Де саме ти запропонував мені стати твоєю дружиною?",
+            options: [
+                { text: "Кротенки", correct: true },
+                { text: "Одеса", correct: false },
+                { text: "Київ", correct: false },
+                { text: "Яремче", correct: false }
+            ]
+        },
+        {
+            question: "В якому селищі Закарпаття (біля водоспаду) було зроблено це фото?",
+            image: "photo1.jpg",
+            options: [
+                { text: "Ясіня", correct: true },
+                { text: "Ворохта", correct: false },
+                { text: "Поляниця", correct: false },
+                { text: "Рахів", correct: false }
+            ]
+        },
+        {
+            question: "Біля якого водоспаду так замислено «завтикав» наш синок?",
+            image: "photo2.jpg",
+            options: [
+                { text: "Шипіт", correct: false },
+                { text: "Пробій", correct: true },
+                { text: "Гук", correct: false },
+                { text: "Драгобратський", correct: false }
+            ]
+        },
+        {
+            question: "З якою чудовою парою ми відпочивали тут?",
+            image: "photo3.jpg",
+            options: [
+                { text: "Оля та Андрій", correct: false },
+                { text: "Іра і Женя", correct: true },
+                { text: "Наталя та Сергій", correct: false },
+                { text: "Маша та Влад", correct: false }
+            ]
+        },
+        {
+            question: "Що знаходиться та гарно розмито на фоні позаду тебе?",
+            image: "photo4.jpg",
+            options: [
+                { text: "Замок", correct: false },
+                { text: "Мечеть", correct: true },
+                { text: "Ейфелева вежа", correct: false },
+                { text: "Морський порт", correct: false }
+            ]
+        },
+        {
+            question: "Де знаходиться цей чудовий парк динозаврів (лакшері курорт)?",
+            image: "photo5.jpg",
+            options: [
+                { text: "Поляниця", correct: true },
+                { text: "Яремче", correct: false },
+                { text: "Буковель", correct: false },
+                { text: "Верховина", correct: false }
+            ]
+        },
+        {
+            question: "Як називається це чудове кафе, яке нам порекомендував наш спільний друг?",
+            image: "photo6.jpg",
+            options: [
+                { text: "На пеньках", correct: true },
+                { text: "У лісовика", correct: false },
+                { text: "Біля водоспаду", correct: false },
+                { text: "Стара хата", correct: false }
+            ]
+        },
+        {
+            question: "Скільки років нашому синку на цьому фото?",
+            image: "photo7.jpg",
+            options: [
+                { text: "8 років", correct: true },
+                { text: "6 років", correct: false },
+                { text: "10 років", correct: false },
+                { text: "7 років", correct: false }
+            ]
+        },
+        {
+            question: "Скільки доларів ми відвалили за цей розкішний фемелі рум?",
+            image: "photo8.jpg",
+            options: [
+                { text: "0 $", correct: true },
+                { text: "80 $", correct: false },
+                { text: "300 $", correct: false },
+                { text: "50 $", correct: false }
+            ]
+        },
+        {
+            question: "На фото зображено кадр із мого улюбленого фільму. Як він називається українською мовою?",
+            image: "photo9.jpg",
+            options: [
+                { text: "Щоденник пам'яті", correct: true },
+                { text: "Титанік", correct: false },
+                { text: "Поспішай кохати", correct: false },
+                { text: "Привид", correct: false }
+            ]
+        },
+        {
+            question: "В якому місті ми відпочили разом на морі?",
+            options: [
+                { text: "Алушта", correct: true },
+                { text: "Туреччина", correct: false },
+                { text: "Єгипет", correct: false },
+                { text: "Херсонщина", correct: false }
+            ]
+        },
+        {
+            question: "В якому регіоні ми назбирали так багато грибів?",
+            image: "photo10.jpg",
+            options: [
+                { text: "Яремче", correct: true },
+                { text: "Ясіня", correct: false },
+                { text: "Ворохта", correct: false },
+                { text: "Микуличин", correct: false }
+            ]
+        },
+        {
+            question: "В якому році нам вдалося так відпочити?",
+            image: "photo11.jpg",
+            options: [
+                { text: "2019", correct: true },
+                { text: "2017", correct: false },
+                { text: "2021", correct: false },
+                { text: "2016", correct: false }
+            ]
+        },
+        {
+            question: "Яке свято ми відзначали в цьому аля-карт ресторані?",
+            image: "photo12.jpg",
+            options: [
+                { text: "Великдень", correct: true },
+                { text: "Річниця весілля", correct: false },
+                { text: "День народження", correct: false },
+                { text: "Новий рік", correct: false }
+            ]
+        },
+        {
+            question: "В якому місті Туреччини зроблено це фото?",
+            image: "photo13.jpg",
+            options: [
+                { text: "Бодрум", correct: true },
+                { text: "Анталія", correct: false },
+                { text: "Мармарис", correct: false },
+                { text: "Кемер", correct: false }
+            ]
+        },
+        {
+            question: "Моя мрія для подорожі. Який острів я б хотіла відвідати?",
+            image: "photo14.jpg",
+            options: [
+                { text: "Закінтос", correct: true },
+                { text: "Крит", correct: false },
+                { text: "Майорка", correct: false },
+                { text: "Кіпр", correct: false }
+            ]
+        },
+        {
+            question: "В яке чудове місце ми потрапили пізно ввечері?",
+            image: "photo15.jpg",
+            options: [
+                { text: "Чік-чірік", correct: true },
+                { text: "Чікі-пікі", correct: false },
+                { text: "Тік-так", correct: false },
+                { text: "Бім-бом", correct: false }
+            ]
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    const quizArea = document.getElementById('quizArea');
+    const resultArea = document.getElementById('resultArea');
+    const progressFill = document.getElementById('progressFill');
+    const resultScore = document.getElementById('resultScore');
+    const resultDescription = document.getElementById('resultDescription');
+
+    function shuffleArray(array) {
+        const copy = [...array];
+        for (let i = copy.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+    }
+
+    function loadQuestion() {
+        const question = questions[currentQuestionIndex];
+        const progressPercent = (currentQuestionIndex / questions.length) * 100;
+        progressFill.style.width = `${progressPercent}%`;
+
+        const shuffledOptions = shuffleArray(question.options);
+
+        let imageHtml = '';
+        if (question.image) {
+            imageHtml = `<img src="${question.image}" class="question-image" alt="Фото до питання">`;
+        }
+
+        quizArea.innerHTML = `
+            <div class="question-card">
+                <div class="question-number">Питання ${currentQuestionIndex + 1} з ${questions.length}</div>
+                <div class="question-text">${question.question}</div>
+                ${imageHtml}
+                <div class="options-list">
+                    ${shuffledOptions.map(option => `
+                        <button class="option-button" onclick="answerQuestion(${option.correct})">
+                            <span>${option.text}</span>
+                        </button>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+
+    function answerQuestion(isCorrect) {
+        if (isCorrect) {
+            score++;
+        }
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        quizArea.style.display = 'none';
+        resultArea.style.display = 'block';
+        progressFill.style.width = '100%';
+
+        resultScore.textContent = `${score} / ${questions.length}`;
+
+        if (score === questions.length) {
+            resultDescription.innerHTML = "🏆 <strong>Ідеально! 100% за пам'ять!</strong><br>Ти пам'ятаєш найменші деталі нашого спільного життя. Ти найкращий чоловік у світі! ❤️";
+        } else if (score >= questions.length / 2) {
+            resultDescription.innerHTML = "✨ <strong>Чудовий результат!</strong><br>Ти пам'ятаєш майже все, але деякі моменти варто буде освіжити під час нашої наступної романтичної подорожі! 😉";
+        } else {
+            resultDescription.innerHTML = "🤔 <strong>Хмм... Нам терміново потрібна відпустка!</strong><br>Схоже, час створювати нові яскраві спогади разом! Поцілуй дружину і пройдіть тест ще раз! 😘";
+        }
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>
